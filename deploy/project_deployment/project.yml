@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-deployment
+  namespace: default
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project
+  template:
+    metadata:
+      labels:
+        app: project
+    spec:
+      containers:
+        - name: project-container
+          image: pratikslv38/vsaproject:1.0.201
+          imagePullPolicy: Always
+          command: ["/bin/bash"]
+          args: ["-c", "cd /opt/ && npm start"]
+          envFrom:
+            - configMapRef:
+                name: project-env-config
+            - configMapRef:
+                name: fcm1-config
+          ports:
+            - containerPort: 3031
+          volumeMounts:
+            - name: project-uploads-volume
+              mountPath: /opt/uploads/
+      volumes:
+        - name: project-uploads-volume
+          persistentVolumeClaim:
+            claimName: project-local-pvc
+

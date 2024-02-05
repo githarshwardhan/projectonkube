@@ -1,0 +1,30 @@
+server {
+    rewrite_log on;
+    client_max_body_size 100M;
+    charset utf-8;
+    listen 443;
+    root /var/www/html/safety/;
+    include /etc/nginx/mime.types;
+    server_name 34.227.91.32;
+    location / {
+        try_files $uri /index.html;
+        include /etc/nginx/mime.types;
+    }
+
+    location /admin/api {
+        proxy_pass http://127.0.0.1:30000;
+    }
+
+    location /project/api/v1/ALIXA_PARK {
+        proxy_pass http://127.0.0.1:31100;
+    }
+
+    location /project/api/v1/WOODS {
+        proxy_pass http://127.0.0.1:31200;
+    }
+    location /project/api/v1/SOTERIA/ {
+        proxy_pass http://127.0.0.1:31300;
+
+}
+}
+

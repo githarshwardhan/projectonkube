@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-deployment
+  namespace: default
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+        - name: admin-container
+          image: pratikslv38/1.0.168:1.0.168
+          imagePullPolicy: Always
+          command: ["/bin/bash"]
+          args: ["-c", "cd /opt/ && npm start"]
+          envFrom:
+            - configMapRef:
+                name: admin-env-config
+            - configMapRef:
+                name: fcm1-config
+          ports:
+            - containerPort: 3030
+          volumeMounts:
+            - name: uploads-volume
+              mountPath: /opt/uploads/
+      volumes:
+        - name: uploads-volume
+          persistentVolumeClaim:
+            claimName: local-pvc
